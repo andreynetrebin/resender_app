@@ -187,4 +187,5 @@ fabric.properties
 app/logs/
 app/resend/settings.ini
 app/resend/cls_files/*
-app/ext_databases/db_queries
+app/ext_databases/db_queries.py
+app/resend/uploads/*
