@@ -1,0 +1,27 @@
+{% extends 'resend/base.html' %}
+
+{% block content %}
+{{ pagination.info }}
+{{ pagination.links }}
+
+<h3>{{ resend_title }}</h3>
+<table class='table table-bordered'>
+    <thead>
+      <th>Id</th>
+      <th>Дата</th>
+      <th>Вид работ</th>
+      <th>Результат</th>
+    </thead>
+    <tbody>
+      {% for row in data %}
+        <tr>
+          <td>{{loop.index + pagination.skip}}</td>
+          <td>{{row.created}}</td>
+          <td><a href='{{row.url}}' class='btn btn-primary'>{{row.name}}</a></td>
+          <td>{{row.result}}</td>
+        </tr>
+      {%endfor%}
+    </tbody>
+  </table>
+  {{ pagination.links }}
+  {% endblock %}

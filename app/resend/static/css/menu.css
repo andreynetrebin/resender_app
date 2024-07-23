@@ -1,0 +1,29 @@
+<style>
+body {
+    font-size:14px;
+}
+.grid {
+    width: 100%;
+    border: none;
+    border-collapse: separate;
+    border-spacing: 5px;
+    }
+.anchor_cell {
+    width: 33.3%;
+    vertical-align: top;
+    padding: 0;
+    }
+.anchor_cell a {
+    display: block;
+    padding: 8px;
+    }    
+.anchor_cell {
+    background: #e07272;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+    padding: 80px 0;
+}
+
+    
+</style>    

@@ -1,0 +1,16 @@
+{% extends 'admin/layout.html' %}
+{% block body %}
+  <div class='row'>
+    <div class='col-5 mx-auto'>
+      <h3>Удаление ролей пользователя</h3><hr>
+      <form method='post' action='{{url_for("admin.delete_user_role",id=data.id)}}'>
+          <p>Выбрать роль для удаления</p>
+          {% for role in data.user_roles %}
+          <p><input type="checkbox" name="check_box_roles" value="{{ role.id }}">{{ role.name }}</p>
+          {% endfor %}
+
+        <input type='submit' value='Submit' class='btn btn-primary'>
+      </form>
+    </div>
+  </div>
+{% endblock %}

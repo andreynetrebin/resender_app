@@ -1,0 +1,19 @@
+{% extends 'resend/base.html' %}
+
+{% block content %}
+    <h2>{% block title %} Результат:  {% endblock %}</h2>
+    <p>Выполнено, было найдено - {{ resend_result }}, не найдены - {{ resend_bad_result }}.</p>
+   {% if resend_bad_result > 0 %}
+       <p>Id которые не найдены:</p>
+       {% for bad in bad_list %}
+          <p>{{ bad }}</p>
+       {% endfor %}
+   {% endif %}
+
+   {%if download_filename %}
+   <h3>Результат работы в csv-файле: </h3>
+   <p><a href="{{ url_for('resend.downloads', download_filename=download_filename)}}">Выгрузить</a></p>
+   {% endif %}
+   
+{% endblock %}
+

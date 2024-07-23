@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <title>Профиль</title>
+    <link rel="stylesheet" href="{{url_for('profile.static', filename='css/bootstrap.min.css')}}" crossorigin="anonymous">
+    <script src="{{url_for('profile.static', filename='js/jquery-3.7.1.slim.js')}}" crossorigin="anonymous"></script>
+    <script src="{{url_for('profile.static', filename='js/popper.min.js')}}" crossorigin="anonymous"></script>
+    <script src="{{url_for('profile.static', filename='js/bootstrap.bundle.min.js')}}" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class='container pt-3'>
+      {% block body %}
+      
+      {% endblock %}
+    </div>
+  </body>
+</html>

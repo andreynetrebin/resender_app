@@ -1,0 +1,40 @@
+<nav class="navbar">
+    <div class="container">
+        <div id="navbarMenuHeroA" class="navbar-menu">
+<div class="navbar-end">
+<!-- <a href="{{ url_for('main.index') }}" class="navbar-item">
+Начальная страница
+</a> -->
+<a href="{{ url_for('resend.index') }}" class="navbar-item">
+    Переотправки
+</a>
+<a href="{{ url_for('api.docs') }}" class="navbar-item">
+    Разработчикам
+</a>
+{% if current_user.is_authenticated %}
+<!-- Добро пожаловать, {{ current_user.username }}! -->
+<!-- <a class="navbar-item">Добро пожаловать, {{ current_user.username }}!</a> -->
+<a href="{{ url_for('profile.user_profile') }}" class="navbar-item">
+Профиль
+</a>
+<a href="{{ url_for('admin.admin_panel') }}" class="navbar-item">
+Админка
+</a>
+{% endif %}
+{% if not current_user.is_authenticated %}
+<a href="{{ url_for('auth.login') }}" class="navbar-item">
+Войти
+</a>
+<a href="{{ url_for('auth.signup') }}" class="navbar-item">
+Зарегистрироваться
+</a>
+{% endif %}
+{% if current_user.is_authenticated %}
+<a href="{{ url_for('auth.logout') }}" class="navbar-item">
+Выйти
+</a>
+{% endif %}
+</div>
+        </div>
+    </div>
+</nav>

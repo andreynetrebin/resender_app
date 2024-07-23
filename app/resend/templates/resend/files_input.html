@@ -1,0 +1,41 @@
+{% extends 'resend/base.html' %}
+
+{% block content %}
+
+<h3>{{ resend_title }}</h3>
+
+<form method="POST" role="form" class="form-horizontal" enctype=multipart/form-data>
+  <div class="mb-3">
+    <label for="formFileMultiple" class="form-label">Загрузите файлы</label>
+    <input class="form-control" type="file" name="files"  id="formFileMultiple" multiple>
+  </div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="ADP.UVKIP.ROUTING.OUT">
+  <label class="form-check-label" for="flexRadioDefault1">
+   Отправка от УВКиП в очередь - ADP.UVKIP.ROUTING.OUT, например - ВМСЭ инициативка, ФССП, сведения ЗАГС
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="ADP.NVPSV.ROUTING.OUT">
+  <label class="form-check-label" for="flexRadioDefault2">
+   Отправка от НВПиСВ в очередь - ADP.NVPSV.ROUTING.OUT, например - РНПП, ПОСЗН
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="ADP.NVP.ROUTING.OUT">
+  <label class="form-check-label" for="flexRadioDefault2">
+    Отправка от НВП в очередь - ADP.NVP.ROUTING.OUT, например - файлы от Конышевой (Ижевск)
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="ESB.ADP.UVKIP.UP.IN">
+  <label class="form-check-label" for="flexRadioDefault2">
+    Отправка от УВКиП в очередь - ESB.ADP.UVKIP.UP.IN, например - пакеты СПУ(пачка АДВ), пакеты ФРИ
+  </label>
+</div>
+
+
+<input type="submit" value="Запуск"  class="btn btn-primary"  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+
+
+{% endblock %}

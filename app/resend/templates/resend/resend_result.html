@@ -1,0 +1,12 @@
+{% extends 'resend/base.html' %}
+
+{% block content %}
+    <h2>{% block title %} Результат:  {% endblock %}</h2>
+    <p>Выполнено, было переотправлено - {{ resend_result }}, не переотправлены - {{ resend_bad_result }}.</p>
+   {% if resend_bad_result > 0 %}
+       <p>Id которые не переотправлены:</p>
+       {% for bad in bad_list %}
+          <p>{{ bad }}</p>
+       {% endfor %}
+   {% endif %}
+{% endblock %}

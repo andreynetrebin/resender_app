@@ -1,0 +1,120 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Resender DBQuery - OpenAPI 3.0",
+    "description": "Сервис для получения данных из БД на DB2 Z/OS по SQL запросам",
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8989/api/v1.0/db/queries"
+    }
+  ],
+  "tags": [
+    {
+      "name": "queries",
+      "description": "Получение данных по SQL запросу"
+    }
+  ],
+  "paths": {
+    "/queries": {
+      "post": {
+        "tags": [
+          "query"
+        ],
+        "summary": "Получение данных из БД по запросу",
+        "description": "Получение данных из БД по запросу",
+        "requestBody": {
+          "description": "Отправка json с sql запросом",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Query"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка. Передан неверный логин/пароль для подключения к БД",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Query": {
+        "required": [
+          "db",
+          "user",
+          "password",
+          "query"
+        ],
+        "type": "object",
+        "properties": {
+          "db": {
+            "type": "string",
+            "example": "spu"
+          },
+          "user": {
+            "type": "string",
+            "example": "SPUUSR11"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          },
+          "query": {
+            "type": "string",
+            "example": "select * from sysibm.systables limit 10"
+          }
+        }
+      },
+      "ApiResponseSuccess": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "url_file_result": {
+            "type": "string",
+            "example": "http://127.0.0.1:8989/downloads/api/1715694525.json"
+          }
+        }
+      },
+      "ApiResponseError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Error"
+          },
+          "error": {
+            "type": "string",
+            "example": "OperationalError('[IBM][CLI Driver] SQL30082N  Security processing failed with reason \\\"24\\\" (\\\"USERNAME AND/OR PASSWORD INVALID\\\").  SQLSTATE=08001 SQLCODE=-30082',)"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{% extends 'resend/base.html' %}
+
+{% block content %}
+<h3>{{ resend_title }}</h3>
+
+<form method="POST" role="form" class="form-horizontal" enctype=multipart/form-data>
+
+<div class="mb-3">
+    <label for="formFile" class="form-label">Загрузите файл</label>
+    <input class="form-control" type="file" id="formFile" name="file">
+  </div>
+<input type="submit" value="Запуск"  class="btn btn-primary"  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+
+
+{% endblock %}

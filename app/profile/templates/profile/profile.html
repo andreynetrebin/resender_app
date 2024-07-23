@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <!-- Bootstrap CSS -->
+    <link href="{{url_for('profile.static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+	 <style>
+        /* Стили для бокового меню */
+        #sidebarMenu {
+            min-height: 100vh; /* Высота на всю высоту вьюпорта */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Тень для бокового меню */
+            z-index: 1000; /* Устанавливаем z-index, чтобы меню было поверх основного контента */
+        }
+
+        .sidebar .nav-link {
+            border-radius: 0; /* Убираем закругление углов */
+            color: #333; /* Цвет текста */
+        }
+
+        .sidebar .nav-link:hover {
+            background: #f8f9fa; /* Фон при наведении */
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #007bff; /* Фон для активной ссылки */
+            color: white; /* Цвет текста для активной ссылки */
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Resender</a>
+            <div class="d-flex align-items-center">
+                <span class="me-3">Привет, {{ current_user.username }}!</span>
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">Вернуться на главную</a>
+        </div>
+    </div>
+</nav>    
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar Menu -->
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <!-- <a class="nav-link active" aria-current="page" href="#">
+                            <span data-feather="home"></span>
+                            Редактор
+                        </a> -->
+                        <a class="nav-link active" aria-current="page" href='{{url_for("profile.change_password")}}'>
+                            <span data-feather="home"></span>
+                            Сменить пароль
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+{% extends 'resend/base.html' %}
+
+{% block content %}
+
+
+<h3>{{ resend_title }}</h3>
+
+<div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  {% if category == 'message' %}
+  <div class="alert alert-warning" role="alert">
+    {% else %}
+    <div class="alert alert-{{ category }}" role="alert">
+      {% endif %}
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+
+
+{% if comment %}
+
+<p>{{ comment }}</p>
+{% endif %}
+
+  <form method="POST" role="form" class="form-horizontal">
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label">Задайте период и внесите messageID-шники</label>
+      <p>Интервал поиска: с <input type="date" id="start_date" name="start_date" value="{{ current_date }}"> по <input
+          type="date" id="end_date" name="end_date" value="{{ current_date }}"></p>
+      <textarea class="form-control" id="exampleFormControlTextarea1" rows="10" name="text"></textarea>
+    </div>
+
+    <input type="submit" value="Запуск" class="btn btn-primary"
+      style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+
+  </form>
+
+{% endblock %}
+
+  

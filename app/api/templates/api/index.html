@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Документация API Swagger UI</title>
+    <link href="{{url_for('api.static', filename='css/swagger-ui.css')}}" rel="stylesheet">
+    <link href="{{url_for('api.static', filename='css/index.css')}}" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('api.static', filename='img/favicon-32x32.png') }}" sizes="32x32"/>
+    <link rel="icon" type="image/png" href="{{ url_for('api.static', filename='img/favicon-16x16.png') }}" sizes="16x16"/>
+  </head>
+  <body>
+    <a href="{{ url_for('main.index') }}">Вернуться на главную</a>
+    <div id="swagger-ui"></div>
+    <script>
+      window.onload = function() {
+
+  window.ui = SwaggerUIBundle({
+    url: "{{ url_for('api.static', filename='openapi.json') }}",
+    dom_id: '#swagger-ui',
+    deepLinking: true,
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset
+    ],
+    plugins: [
+      SwaggerUIBundle.plugins.DownloadUrl
+    ],
+    layout: "StandaloneLayout"
+  });
+
+};
+
+    </script>
+
+
+    <script src="{{ url_for('api.static', filename='js/swagger-ui-bundle.js') }}"></script>
+    <script src="{{ url_for('api.static', filename='js/swagger-ui-standalone-preset.js') }}"></script>
+  </body>
+</html>

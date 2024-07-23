@@ -1,0 +1,42 @@
+{% extends 'resend/base.html' %}
+
+{% block content %}
+
+<h3>{{ resend_title }}</h3>
+
+
+<form method="POST" role="form" class="form-horizontal" enctype=multipart/form-data>
+  <div class="mb-3">
+    <label for="formFileMultiple" class="form-label">Загрузите файлы</label>
+    <input class="form-control" type="file" name="files"  id="formFileMultiple" multiple>
+  </div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="SPU.INSREPORT.EFSSTAZ.IN">
+  <label class="form-check-label" for="flexRadioDefault1">
+   СЗВ-СТАЖ-ЕФС (очередь SPU.INSREPORT.EFSSTAZ.IN)
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="SPU.INSREPORT.EFSBUDZ.IN">
+  <label class="form-check-label" for="flexRadioDefault2">
+    СЗВ-БЮДЖ (очередь SPU.INSREPORT.EFSBUDZ.IN)
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="SPU.INSREPORT.EFSODV.IN">
+  <label class="form-check-label" for="flexRadioDefault2">
+    ОДВ (очередь SPU.INSREPORT.EFSODV.IN)
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="SPU.INSREPORT.EFSSZVTD.IN">
+  <label class="form-check-label" for="flexRadioDefault2">
+    СЗВ-ТД-ЕФС (очередь SPU.INSREPORT.EFSSZVTD.IN)
+  </label>
+</div>
+
+
+<input type="submit" value="Запуск"  class="btn btn-primary"  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'resend/base.html' %}
+
+<style>
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+  /* a:link {
+    color: green;
+    background-color: transparent;
+    text-decoration: none;
+  } */
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+</style>
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('resend.static',filename='css/price.css') }}">
+    <!-- Custom styles for this template -->
+
+{% block content %}
+
+  
+  <div class="row row-cols-1 row-cols-md-4 mb-4 text-center">
+    {% for tp in tech_prosesses %}
+    <div class="col">
+      <div class="card mb-4 rounded-3 shadow-sm border-primary">
+        <div class="card-header py-3 text-white bg-primary border-primary">
+          <h4 class="my-0 fw-normal">{{tp.name}}</h4>
+        </div>
+        <div class="card-body">
+          <ul type="disc">
+            {% for work in works %}
+            {% if tp.id == work.techprocess_id %}
+            <li><a href="{{work.url}}">{{work.name}}</a></li>
+            {%endif%}
+            {%endfor%}
+          </ul>
+        </div>
+      </div>
+    </div>
+    {%endfor%}
+  </div>
+
+
+{% endblock %}
+
+
+
