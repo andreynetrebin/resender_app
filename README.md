@@ -12,7 +12,7 @@ Flask приложение для формирования сообщений (x
 - Swagger документация к REST API
 
 ## Flask Application Structure
-
+```
 .
 ├── .
 ├── │   .env
@@ -203,6 +203,7 @@ Flask приложение для формирования сообщений (x
 ├── │   └───__init__.py
 ├── │           test_basic.py
 └── │
+```
 
 ## Database Structure
 ## Screenshots
