@@ -33,7 +33,7 @@ class TestingConfig(Config):
     LOGGING_LEVEL = 'INFO'
 
 
-configuration = {
+config = {
     "dev": DevConfig,
     "prod": ProdConfig,
     "default": DevConfig,

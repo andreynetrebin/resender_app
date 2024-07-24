@@ -1,10 +1,11 @@
 from flask import Flask
-from config import configuration
 from flask_login import LoginManager
 import logging
-from .dict_config import get_dict_config
+from logging.config import dictConfig
 from os import path, makedirs
 from typing import Optional
+from config import config
+from .dict_config import get_dict_config
 
 app_dir = path.abspath(path.dirname(__file__))
 logs_dir = path.join(app_dir, "logs")
@@ -21,7 +22,7 @@ def create_app(configuration):
     """
 
     app = Flask(__name__)
-    app.config.from_object(configuration.get(configuration))
+    app.config.from_object(config.get(configuration))
     logging_level = app.config["LOGGING_LEVEL"]
     logging_filename = path.join(logs_dir, app.config["LOGFILENAME"])
     dict_config = get_dict_config(logging_level, logging_filename)
