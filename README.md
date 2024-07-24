@@ -3,6 +3,9 @@
 
 Flask приложение для формирования сообщений (xml, json) из различных источников и их отправке в брокер сообщений IBM MQ.
 
+## Tech Stack
+
+Flask, Bootstrap, jQuery
 
 ## Features
 
@@ -34,52 +37,24 @@ Flask приложение для формирования сообщений (x
 ├── │   │   │
 ├── │   │   ├───static
 ├── │   │   │   ├───css
-├── │   │   │   │       bootstrap.min.css
-├── │   │   │   │
 ├── │   │   │   └───js
-├── │   │   │           bootstrap.bundle.min.js
-├── │   │   │           jquery-3.7.1.slim.js
-├── │   │   │           popper.min.js
 ├── │   │   │
 ├── │   │   ├───templates
 ├── │   │   │   └───admin
-├── │   │   │           add_role.html
-├── │   │   │           add_user.html
-├── │   │   │           add_user_role.html
-├── │   │   │           admin_panel.html
-├── │   │   │           adm_login.html
-├── │   │   │           delete_user_role.html
-├── │   │   │           editland.html
-├── │   │   │           edit_user.html
-├── │   │   │           layout.html
-├── │   │   │
 ├── │   │
 ├── │   ├───api
 ├── │   │   │   api.py
 ├── │   │   │
 ├── │   │   ├───downloads
+├── │   │   │
 ├── │   │   ├───static
 ├── │   │   │   │   openapi.json
-├── │   │   │   │
 ├── │   │   │   ├───css
-├── │   │   │   │       index.css
-├── │   │   │   │       swagger-ui.css
-├── │   │   │   │
 ├── │   │   │   ├───img
-├── │   │   │   │       favicon-16x16.png
-├── │   │   │   │       favicon-32x32.png
-├── │   │   │   │
 ├── │   │   │   └───js
-├── │   │   │           swagger-initializer.js
-├── │   │   │           swagger-ui-bundle.js
-├── │   │   │           swagger-ui-es-bundle-core.js
-├── │   │   │           swagger-ui-es-bundle.js
-├── │   │   │           swagger-ui-standalone-preset.js
-├── │   │   │           swagger-ui.js
 ├── │   │   │
 ├── │   │   ├───templates
 ├── │   │   │   └───api
-├── │   │   │           index.html
 ├── │   │   │
 ├── │   │
 ├── │   ├───auth
@@ -96,46 +71,27 @@ Flask приложение для формирования сообщений (x
 ├── │   │   │   db_queries.py
 ├── │   │   │
 ├── │   │
-├── │   ├───logs
-├── │   │       resender.log
-├── │   │
 ├── │   ├───main
 ├── │   │   │   main.py
 ├── │   │   │
 ├── │   │   ├───static
 ├── │   │   │   ├───css
-├── │   │   │   │       bulma.min.css
 ├── │   │   │   │
 ├── │   │   │   └───js
-├── │   │   │           bootstrap.bundle.min.js
 ├── │   │   │
 ├── │   │   ├───templates
 ├── │   │   │   └───main
-├── │   │   │           base.html
-├── │   │   │           index.html
-├── │   │   │           login.html
-├── │   │   │           navbar.html
-├── │   │   │           profile.html
-├── │   │   │           signup.html
-├── │   │   │
 ├── │   │
 ├── │   ├───profile
 ├── │   │   │   profile.py
 ├── │   │   │
 ├── │   │   ├───static
 ├── │   │   │   ├───css
-├── │   │   │   │       bootstrap.min.css
 ├── │   │   │   │
 ├── │   │   │   └───js
-├── │   │   │           bootstrap.bundle.min.js
-├── │   │   │           jquery-3.7.1.slim.js
-├── │   │   │           popper.min.js
 ├── │   │   │
 ├── │   │   ├───templates
 ├── │   │   │   └───profile
-├── │   │   │           change_password.html
-├── │   │   │           layout.html
-├── │   │   │           profile.html
 ├── │   │   │
 ├── │   │
 ├── │   ├───resend
@@ -144,59 +100,15 @@ Flask приложение для формирования сообщений (x
 ├── │   │   │   resend.py
 ├── │   │   │   settings.ini
 ├── │   │   │
-├── │   │   ├───cls_files
-├── │   │   │       regions.csv
-├── │   │   │
-├── │   │   ├───downloads
 ├── │   │   ├───prepare_data
-├── │   │   │   │   adv_adi_prepare_data.py
-├── │   │   │   │   egrn_egrul_egrip_prepare_data.py
-├── │   │   │   │   npf_doc_uspn.py
-├── │   │   │   │   person_apply_application_request.py
-├── │   │   │   │   poszn.py
-├── │   │   │   │   rnpp.py
-├── │   │   │   │   szi_km_to_fbdp_prepare_data.py
-├── │   │   │   │   szi_sv_to_nvp_prepare_data.py
-├── │   │   │   │   upp_efs.py
-├── │   │   │   │   upp_is.py
-├── │   │   │   │   upp_szvm.py
-├── │   │   │   │   vmse_proactive.py
-├── │   │   │   │   vmse_zapros.py
-├── │   │   │   │
 ├── │   │   │
 ├── │   │   ├───static
 ├── │   │   │   ├───css
-├── │   │   │   │       bootstrap.min.css
-├── │   │   │   │       menu.css
-├── │   │   │   │       pricing.css
 ├── │   │   │   │
 ├── │   │   │   └───js
-├── │   │   │           bootstrap.bundle.min.js
 ├── │   │   │
-├── │   │   ├───temp
 ├── │   │   ├───templates
 ├── │   │   │   └───resend
-├── │   │   │           base.html
-├── │   │   │           change_status.html
-├── │   │   │           files_egrn_egrip_egrul_input.html
-├── │   │   │           files_input.html
-├── │   │   │           files_input_efs_to_spu.html
-├── │   │   │           files_input_soe.html
-├── │   │   │           file_input.html
-├── │   │   │           get_szv_zapros.html
-├── │   │   │           index.html
-├── │   │   │           journal.html
-├── │   │   │           list_input.html
-├── │   │   │           login.html
-├── │   │   │           navbar.html
-├── │   │   │           resend_log_report.html
-├── │   │   │           resend_result.html
-├── │   │   │           search_szv_zapros.html
-├── │   │   │           uspn_input.html
-├── │   │   │
-├── │   │   ├───uploads
-├── │   │   │
-├── │   │   ├───utilities
 ├── │   │
 ├── │
 ├── ├───tests
@@ -206,11 +118,13 @@ Flask приложение для формирования сообщений (x
 ```
 
 ## Database Structure
+
+![alt text](https://github.com/andreynetrebin/resender_app/images/main/diagram_db.png?raw=true)
+
 ## Screenshots
 
 ![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
 
-![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
