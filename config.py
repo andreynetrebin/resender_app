@@ -30,6 +30,7 @@ class TestingConfig(Config):
     DEBUG = True
     TESTING = True
     DATABASE = path.join(basedir, "test_app.db")
+    LOGGING_LEVEL = 'INFO'
 
 
 configuration = {

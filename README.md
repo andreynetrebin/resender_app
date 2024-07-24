@@ -5,8 +5,7 @@ Flask приложение для формирования сообщений (x
 
 ## Tech Stack
 
-Flask, Bootstrap, jQuery
-
+Flask, Bootstrap, jQuer
 ## Features
 
 - Интуитивно понятный интерфейс
