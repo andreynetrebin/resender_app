@@ -121,14 +121,23 @@ Flask, Bootstrap, jQuer
 ![diagram_db](https://github.com/user-attachments/assets/1b065ab0-ebce-4d52-a9c0-364802ad1301)
 
 ## Screenshots
+-стартовая страница
 
 ![start_page](https://github.com/user-attachments/assets/560ec36c-4136-48a4-a413-1a57b3cd9a78)
 
+-форма входа
+
 ![login_page](https://github.com/user-attachments/assets/444737c4-bdcf-4956-8c5f-ec4800675080)
+
+-основное меню
 
 ![resend_works_page](https://github.com/user-attachments/assets/68984976-4f0b-4ee5-8800-2db543df7848)
 
+-админ-панель
+
 ![admin_page](https://github.com/user-attachments/assets/21c68f88-193b-499a-a17b-92dd6c7b0307)
+
+-страница Swagger-документации к API
 
 ![api_doc_page](https://github.com/user-attachments/assets/20418d5f-704b-4a5c-8c24-45c6a1c001b1)
 
