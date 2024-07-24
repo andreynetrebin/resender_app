@@ -119,11 +119,20 @@ Flask, Bootstrap, jQuery
 
 ## Database Structure
 
-![alt text](https://github.com/andreynetrebin/resender_app/images/main/diagram_db.png?raw=true)
+![diagram_db](https://github.com/user-attachments/assets/1b065ab0-ebce-4d52-a9c0-364802ad1301)
 
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![start_page](https://github.com/user-attachments/assets/560ec36c-4136-48a4-a413-1a57b3cd9a78)
+
+![login_page](https://github.com/user-attachments/assets/444737c4-bdcf-4956-8c5f-ec4800675080)
+
+![resend_works_page](https://github.com/user-attachments/assets/68984976-4f0b-4ee5-8800-2db543df7848)
+
+![admin_page](https://github.com/user-attachments/assets/21c68f88-193b-499a-a17b-92dd6c7b0307)
+
+![api_doc_page](https://github.com/user-attachments/assets/20418d5f-704b-4a5c-8c24-45c6a1c001b1)
+
 
 ## Environment Variables
 
@@ -147,7 +156,7 @@ $ pip install -r requirements.txt
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone [https://link-to-project](https://github.com/andreynetrebin/resender_app.git)
 ```
 
 Go to the project directory
