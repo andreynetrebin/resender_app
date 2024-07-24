@@ -31,6 +31,21 @@ def init_db_command():
     click.echo("Initialized the database.")
 
 
+@with_appcontext
+def migrate_db():
+    db = get_db()
+
+    with current_app.open_resource(path.join("database", "migrate.sql")) as f:
+        db.executescript(f.read().decode("utf8"))
+
+
+@click.command("migrate-db")
+def init_db_command():
+    """Миграция изменений БД"""
+    migrate_db()
+    click.echo("Migrated complete.")
+
+
 def close_db(e=None):
     db = g.pop("db", None)
 

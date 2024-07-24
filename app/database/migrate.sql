@@ -4,43 +4,8 @@ CREATE TABLE departments (
     name varchar(128) NOT NULL
 );
 
-DROP TABLE IF EXISTS users;
-CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username varchar(128) NOT NULL,
-    password varchar(64) NOT NULL,
-    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    department_id INTEGER NOT NULL,
-    FOREIGN KEY(department_id) REFERENCES departments(id)
-);
+ALTER TABLE users ADD COLUMN department_id INTEGER DEFAULT 1 NOT NULL REFERENCES departments(id);
 
-DROP TABLE IF EXISTS roles;
-CREATE TABLE roles (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name varchar(64) NOT NULL,
-    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-DROP TABLE IF EXISTS links;
-CREATE TABLE links (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    role_id INTEGER,
-    user_id INTEGER,
-    FOREIGN KEY(role_id) REFERENCES roles(id),
-    FOREIGN KEY(user_id) REFERENCES users(id)
-);
-
-DROP TABLE IF EXISTS journal_resend;
-CREATE TABLE journal_resend (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name varchar(64) NOT NULL,
-    created TIMESTAMP NOT NULL DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')),
-    result TEXT NOT NULL, 
-    description varchar(128),
-    url varchar(128) NOT NULL,
-    user_id INTEGER NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES users(id)
-);
 
 DROP TABLE IF EXISTS techprocesses;
 CREATE TABLE techprocesses (
@@ -88,22 +53,6 @@ INSERT INTO departments (name) VALUES ('Отдел эксплуатации');
 INSERT INTO departments (name) VALUES ('Отдел ПУ');  
 INSERT INTO departments (name) VALUES ('Отдел НСИ');  
 INSERT INTO departments (name) VALUES ('Руководство');  
-
-INSERT INTO users (username, password, department_id) VALUES ('admin', 'sha256$CPXnQtsB6cUyHFLb$7ad79b9287be36affbb793d6e3ff1f3dfe59342eef9bcee5e6f7d78fcfa600b3', 1);
-INSERT INTO users (username, password, department_id) VALUES ('netrebin', 'sha256$kXZW4MokYwgxLRjt$196001b3092215636c5db3d7bfd94521c3d4114e2a04b278c94ca0fdd5172f96', 1);
-INSERT INTO users (username, password, department_id) VALUES ('test_user', 'sha256$kXZW4MokYwgxLRjt$196001b3092215636c5db3d7bfd94521c3d4114e2a04b278c94ca0fdd5172f96', 1);
-
-INSERT INTO roles (name) VALUES ('admin');  
-INSERT INTO roles (name) VALUES ('all');
-INSERT INTO roles (name) VALUES ('fri_vmse');
-INSERT INTO roles (name) VALUES ('insurers');
-INSERT INTO roles (name) VALUES ('npf_uspn');            
-INSERT INTO roles (name) VALUES ('persons');            
-
-INSERT INTO links (role_id, user_id) VALUES (1, 1);
-INSERT INTO links (role_id, user_id) VALUES (2, 2);
-INSERT INTO links (role_id, user_id) VALUES (3, 3);
-INSERT INTO links (role_id, user_id) VALUES (4, 3);
 
 INSERT INTO techprocesses (name) VALUES ('Сервис заявлений (PersonApplication)');  
 INSERT INTO techprocesses (name) VALUES ('Сервис страхователей (InsurerReport)');  
