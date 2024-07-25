@@ -17,102 +17,67 @@ Flask, Bootstrap, jQuery
 ```
 .
 ├── .
-├── │   .env
-├── │   app.db
-├── │   config.py
-├── │   README.md
-├── │   requirements.txt
-├── │   test_app.db
+├── │   .env                        
+├── │   app.db                      # база данных приложения  
+├── │   config.py                   # конфигурация приложения
+├── │   requirements.txt            # зависимости
 ├── │
 ├── ├───app
-├── │   │   db.py
-├── │   │   dict_config.py
-├── │   │   ext_database.py
-├── │   │   users.py
-├── │   │   __init__.py
+├── │   │   __init__.py             # создание приложения
+├── │   │   db.py                   # инициализация базы данных
+├── │   │   dict_config.py          # конфигурация логирования
+├── │   │   users.py                # модель пользователей
 ├── │   │
-├── │   ├───admin
-├── │   │   │   admin.py
+├── │   ├───admin                   # модуль Админ-панели
+├── │   │   │   admin.py                # views модуля
 ├── │   │   │
-├── │   │   ├───static
-├── │   │   │   ├───css
-├── │   │   │   └───js
+├── │   │   ├───static                  # Javascripts/CSS файлы модуля
 ├── │   │   │
-├── │   │   ├───templates
-├── │   │   │   └───admin
+├── │   │   ├───templates               # html-шаблоны модуля  
 ├── │   │
-├── │   ├───api
-├── │   │   │   api.py
+├── │   ├───api                     # модуль API   
+├── │   │   │   api.py                  # views модуля  
 ├── │   │   │
-├── │   │   ├───downloads
+├── │   │   ├───static                  # Javascripts/CSS файлы модуля (OpenAPI Specification)
 ├── │   │   │
-├── │   │   ├───static
-├── │   │   │   │   openapi.json
-├── │   │   │   ├───css
-├── │   │   │   ├───img
-├── │   │   │   └───js
-├── │   │   │
-├── │   │   ├───templates
-├── │   │   │   └───api
-├── │   │   │
+├── │   │   ├───templates               # html-шаблоны модуля (OpenAPI Specification)
 ├── │   │
-├── │   ├───auth
-├── │   │   │   auth.py
-├── │   │   │
+├── │   ├───auth                    # модуль авторизации/аутентификации
+├── │   │   │   auth.py                 # views модуля
 ├── │   │
 ├── │   ├───database
-├── │   │   │   init_db.py
-├── │   │   │   schema.sql
-├── │   │   │   __init__.py
+├── │   │   │   init_db.py          # скрипт по инициалиции БД  
+├── │   │   │   migrate.py          # скрипт по обновлению БД
+├── │   │
+├── │   ├───main                    # модуль стартовой страницы
+├── │   │   │   main.py                 # views модуля
+├── │   │   │
+├── │   │   ├───static                  # Javascripts/CSS файлы модуля + auth модуля
+├── │   │   │
+├── │   │   ├───templates               # html-шаблоны модуля + auth модуля
+├── │   │
+├── │   ├───profile                 # модуль профилей пользователей
+├── │   │   │   profile.py              # views модуля
+├── │   │   │
+├── │   │   ├───static              # Javascripts/CSS файлы модуля
+├── │   │   │
+├── │   │   ├───templates           # html-шаблоны модуля
 ├── │   │   │
 ├── │   │
-├── │   ├───ext_databases
-├── │   │   │   db_queries.py
+├── │   ├───resend                  # модуль основного функционала
+├── │   │   │   utils.py                # вспомогательные скрипты
+├── │   │   │   resend.py               # views модуля
 ├── │   │   │
-├── │   │
-├── │   ├───main
-├── │   │   │   main.py
+├── │   │   ├───prepare_data            # каталог со скриптами предварительной обработки данных
 ├── │   │   │
-├── │   │   ├───static
-├── │   │   │   ├───css
-├── │   │   │   │
-├── │   │   │   └───js
+├── │   │   ├───static                  # Javascripts/CSS файлы модуля             
 ├── │   │   │
-├── │   │   ├───templates
-├── │   │   │   └───main
-├── │   │
-├── │   ├───profile
-├── │   │   │   profile.py
-├── │   │   │
-├── │   │   ├───static
-├── │   │   │   ├───css
-├── │   │   │   │
-├── │   │   │   └───js
-├── │   │   │
-├── │   │   ├───templates
-├── │   │   │   └───profile
-├── │   │   │
-├── │   │
-├── │   ├───resend
-├── │   │   │   files_data_handler.py
-├── │   │   │   mq.py
-├── │   │   │   resend.py
-├── │   │   │   settings.ini
-├── │   │   │
-├── │   │   ├───prepare_data
-├── │   │   │
-├── │   │   ├───static
-├── │   │   │   ├───css
-├── │   │   │   │
-├── │   │   │   └───js
-├── │   │   │
-├── │   │   ├───templates
-├── │   │   │   └───resend
+├── │   │   ├───templates               # html-шаблоны модуля
 ├── │   │
 ├── │
 ├── ├───tests
 ├── │   └───__init__.py
-├── │           test_basic.py
+├── │           test_basic.py        # тесты
 └── │
 ```
 
