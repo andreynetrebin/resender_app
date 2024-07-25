@@ -30,7 +30,7 @@ import json
 from ..ext_database import Database
 from .mq import ManagerQueue
 from app.db import get_db
-from .files_data_handler import (
+from .utils import (
     get_delimiter,
     get_dict_from_csv,
     read_txt,
