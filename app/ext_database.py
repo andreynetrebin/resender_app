@@ -1,4 +1,4 @@
-import ibm_db_dbi
+# import ibm_db_dbi
 from flask import current_app
 import json
 from .ext_databases.db_queries import *

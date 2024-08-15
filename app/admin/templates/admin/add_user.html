@@ -1,18 +1,18 @@
-{% extends 'admin/layout.html' %}
-{% block body %}
-  <div class='row'>
-    <div class='col-5 mx-auto'>
-      <h3>Add user</h3><hr>
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Добавить пользователя</h1>
+</div>
       <form method='post' action='{{url_for("admin.add_user")}}'>
         <div class='form-group'>
-          <label>Имя пользователя</label>
-          <input type='text' name='uname' required class='form-control'>
+          <label>Имя пользователя:</label>
+          <input type='text' name='name' required class='form-control'>
         </div>
         <div class='form-group'>
-          <label>Пароль</label>
-          <input type='passowrd' name='contact' required class='form-control'>
+          <label>Пароль:</label>
+          <input type='password' name='password' required class='form-control'>
         </div>
-        <input type='submit' value='Submit' class='btn btn-primary'>
+        <input type='submit' value='Добавить' class='btn btn-primary'>
       </form>
     
     </div>
