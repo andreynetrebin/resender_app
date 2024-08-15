@@ -1,0 +1,32 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Управление видами работ</h1>
+</div>
+<p class='text-right'>
+  <a href='{{url_for("admin.add_work")}}' class='btn btn-success '>+Добавить работу</a>
+  <a href='{{url_for("admin.add_techprocess")}}' class='btn btn-success '>+Добавить техпроцесс</a>
+</p>
+    <table class='table table-bordered'>
+    <thead>
+      <th>Id</th>
+      <th>Наименование</th>
+      <th>Наименование техпроцесса</th>
+      <th>Url</th>
+      <th>Редактирование</th>
+      <th>Удаление</th>
+    </thead>
+    <tbody>
+      {% for row in works %}
+        <tr>
+          <td>{{loop.index}}</td>
+          <td>{{row.name}}</td>
+          <td>{{row.tp_name}}</td>
+          <td>{{row.url}}</td>
+          <td><a href='{{url_for("admin.edit_work",id=row.id)}}' class='btn btn-primary'>Редактировать</a></td>
+          <td><a href='{{url_for("admin.delete_work",id=row.id)}}' class='btn btn-danger' onclick='return confirm("Вы уверены?")'>Удалить</a></td>
+        </tr>
+      {%endfor%}
+    </tbody>
+  </table>
+  {% endblock %}
