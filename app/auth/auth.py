@@ -10,12 +10,12 @@ auth = Blueprint("auth", __name__)
 
 @auth.route("/login")
 def login():
-    """ 
+    """
     Форма авторизации.
 
     Parameters:
         GET:/login
-        
+
     Returns:
         Рендеринг шаблона main/login.html.
 
@@ -25,7 +25,7 @@ def login():
 
 @auth.route("/signup")
 def signup():
-    """ 
+    """
     Регистрация пользователей.
 
     Parameters:
@@ -40,7 +40,7 @@ def signup():
 
 @auth.route("/signup", methods=["POST"])
 def signup_post():
-    """ 
+    """
     Регистрация пользователей.
 
     Parameters:
@@ -70,7 +70,7 @@ def signup_post():
 @auth.route("/logout")
 @login_required
 def logout():
-    """ 
+    """
     Выход пользователя.
 
     Parameters:
@@ -87,7 +87,7 @@ def logout():
 
 @auth.route("/login", methods=["POST"])
 def login_post():
-    """ 
+    """
     Авторизация пользователей.
 
     Parameters:
@@ -107,15 +107,13 @@ def login_post():
 
         if check_password_hash(user.password, password):
             login_user(user, remember=remember)
+            if name == "admin":
+                return redirect(url_for("admin.admin_panel"))
             return redirect(url_for("resend.index"))
 
         else:
             flash("Пожалуйста, проверьте вводимые данные")
-            return redirect(
-                url_for("auth.login")
-            )
+            return redirect(url_for("auth.login"))
     else:
         flash("Пользователь не найден")
-        return redirect(
-            url_for("auth.login")
-        )
+        return redirect(url_for("auth.login"))
