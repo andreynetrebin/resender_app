@@ -11,7 +11,7 @@ from flask import (
     send_from_directory,
 )
 from flask_login import login_required, current_user
-# from flask_paginate import Pagination, get_page_parameter
+from flask_paginate import Pagination, get_page_parameter
 from werkzeug.utils import secure_filename
 from os import path, makedirs, listdir, remove
 from os.path import basename
@@ -21,14 +21,16 @@ import glob
 import calendar
 import zipfile
 import shutil
+
 import requests
 import subprocess
 import configparser
 import datetime
 import re
 import json
+
 from ..ext_database import Database
-# from .mq import ManagerQueue
+from .mq import ManagerQueue
 from app.db import get_db
 from .utils import (
     get_delimiter,
@@ -38,7 +40,7 @@ from .utils import (
     write_txt,
     export_to_csv,
     append_to_csv,
-
+    get_fieldnames,
 )
 from .prepare_data.person_apply_application_request import (
     get_action_queue,
@@ -94,11 +96,14 @@ def allowed_file(filename):
 
 def get_message(work_name, prepare_data):
     cursor = get_db().cursor()
+    cursor.execute("SELECT * FROM works")
     cursor.execute(
         """SELECT template_message FROM
-        template_messages tm
-        JOIN works on tm.work_id = works.id
-        WHERE works.name = ?""", (work_name,))
+       template_messages tm
+       JOIN works on tm.work_id = works.id
+       WHERE works.name = ?""",
+        (work_name,),
+    )
     template_message = Template(cursor.fetchone()[0])
     message = template_message.safe_substitute(prepare_data)
 
@@ -134,11 +139,14 @@ def convert(date_time):
 
 def request_to_elastik(id, search_date):
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0'}
+        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0"
+    }
     elk_host = config.get("ELK", "host")
     elk_port = config.get("ELK", "port")
     response = requests.get(
-        f"http://{elk_host}:{elk_port}/vioup_{search_date}/_search?q={id}", headers=headers)
+        f"http://{elk_host}:{elk_port}/vioup_{search_date}/_search?q={id}",
+        headers=headers,
+    )
 
     return response
 
@@ -163,7 +171,9 @@ def index():
     cursor = get_db().cursor()
     tech_prosesses = cursor.execute("SELECT id, name from techprocesses").fetchall()
     works = cursor.execute("SELECT name, url, techprocess_id from works").fetchall()
-    return render_template("resend/index.html", tech_prosesses=tech_prosesses, works=works)
+    return render_template(
+        "resend/index.html", tech_prosesses=tech_prosesses, works=works
+    )
 
 
 @resend.route("/get_szv_zapros", methods=["POST", "GET"])
@@ -222,14 +232,18 @@ def get_szv_zapros():
                                     }
                                     record.update(data)
                                     current_app.logger.debug("ищем даннные в базе ВИО")
-                                    with Database(config.get("VIO_DATABASE", "alias"),
-                                                  config.get("VIO_DATABASE", "login"),
-                                                  config.get("VIO_DATABASE", "password")) as db:
+                                    with Database(
+                                        config.get("VIO_DATABASE", "alias"),
+                                        config.get("VIO_DATABASE", "login"),
+                                        config.get("VIO_DATABASE", "password"),
+                                    ) as db:
                                         szv_zapros_data = db.get_szv_zapros_data(id)
                                         record.update(szv_zapros_data[0])
                                     result_finded.append(id)
                                 except AttributeError:
-                                    current_app.logger.debug("Среди полученных данных не было ID-шника СЗВ-Запроса")
+                                    current_app.logger.debug(
+                                        "Среди полученных данных не было ID-шника СЗВ-Запроса"
+                                    )
                                     continue
                     else:
                         continue
@@ -271,9 +285,7 @@ def get_szv_zapros():
 
             resend_result = len(result_finded)
             resend_bad_result = len(result_not_finded)
-            journal_msg_report = (
-                f"Найдено {resend_result} ID СЗВ-Запроса, не найдено {resend_bad_result}"
-            )
+            journal_msg_report = f"Найдено {resend_result} ID СЗВ-Запроса, не найдено {resend_bad_result}"
             add_to_journal(request, work_name, journal_msg_report)
 
             return render_template(
@@ -288,7 +300,7 @@ def get_szv_zapros():
             "resend/get_szv_zapros.html",
             current_date=current_date,
             resend_title=work_name,
-            comment='Указываем в столбик именно messageID'
+            comment="Указываем в столбик именно messageID",
         )
 
     else:
@@ -307,15 +319,21 @@ def szi_sv_to_nvp():
 
             messages = {}
             bad_list = []
-            with Database(config.get("VIO_DATABASE", "alias"), config.get("VIO_DATABASE", "login"),
-                          config.get("VIO_DATABASE", "password")) as db:
-                with Database(config.get("SPU_DATABASE", "alias"), config.get("SPU_DATABASE", "login"),
-                              config.get("SPU_DATABASE", "password")) as db2:
+            with Database(
+                config.get("VIO_DATABASE", "alias"),
+                config.get("VIO_DATABASE", "login"),
+                config.get("VIO_DATABASE", "password"),
+            ) as db:
+                with Database(
+                    config.get("SPU_DATABASE", "alias"),
+                    config.get("SPU_DATABASE", "login"),
+                    config.get("SPU_DATABASE", "password"),
+                ) as db2:
                     for id in list_ids:
                         data_message = {}
 
                         szv_zapros_data = db.get_szv_zapros_data(id)
-                        id_szi_sv = szv_zapros_data[0]['id_szi_sv']
+                        id_szi_sv = szv_zapros_data[0]["id_szi_sv"]
                         if id_szi_sv is not None:
                             data_message.update(szv_zapros_data[0])
 
@@ -323,8 +341,12 @@ def szi_sv_to_nvp():
 
                             if spu_szi_sv_data:
                                 data_message.update(spu_szi_sv_data)
-                                data_message.update({"queue_name": config.get("MqSpuOut", "queue_name")})
-                                prepare_data = get_szi_sv_to_nvp_prepare_data(data_message)
+                                data_message.update(
+                                    {"queue_name": config.get("MqSpuOut", "queue_name")}
+                                )
+                                prepare_data = get_szi_sv_to_nvp_prepare_data(
+                                    data_message
+                                )
 
                                 if prepare_data:
                                     message = get_message(work_name, prepare_data)
@@ -340,9 +362,9 @@ def szi_sv_to_nvp():
                             bad_list.append(id)
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"])
@@ -364,7 +386,7 @@ def szi_sv_to_nvp():
         return render_template(
             "resend/list_input.html",
             resend_title=work_name,
-            comment="Указываем в столбик ID в ЕХД СЗВ-Запроса"
+            comment="Указываем в столбик ID в ЕХД СЗВ-Запроса",
         )
     else:
         abort(403, "Отсутствует доступ")
@@ -460,9 +482,7 @@ def change_status():
                 bad_list=bad_list,
             )
 
-        return render_template(
-            "resend/change_status.html", resend_title=work_name
-        )
+        return render_template("resend/change_status.html", resend_title=work_name)
     else:
         abort(403, "Отсутствует доступ")
 
@@ -482,12 +502,15 @@ def person_apply_application_request():
             messages = {}
             bad_list = []
 
-            with Database(config.get("VIO_DATABASE", "alias"), config.get("VIO_DATABASE", "login"),
-                          config.get("VIO_DATABASE", "password")) as db:
+            with Database(
+                config.get("VIO_DATABASE", "alias"),
+                config.get("VIO_DATABASE", "login"),
+                config.get("VIO_DATABASE", "password"),
+            ) as db:
                 for id in list_ids:
                     data_message = {}
 
-                    data_document = db.get_data_document(id, fields=["SENDER", "TYP"])
+                    data_document = db.get_data_document(id, fields=["sender", "typ"])
                     data_message.update(data_document)
 
                     data_attributes = db.get_attributes(id)
@@ -503,11 +526,7 @@ def person_apply_application_request():
                     data_message.update({"action": action, "queue_name": queue_name})
                     prepare_data = get_person_app_prepare_data(id, data_message)
                     if prepare_data:
-                        template = path.join(
-                            templates_dir, "person_apply_application_request.txt"
-                        )
                         message = get_message(work_name, prepare_data)
-                        # print(message)
                         data_to_sent = get_data_to_sent(
                             id, message.replace("\n", ""), data_message
                         )
@@ -516,9 +535,9 @@ def person_apply_application_request():
                         bad_list.append(id)
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"])
@@ -558,12 +577,15 @@ def vmse_proactive():
 
             messages = {}
             bad_list = []
-            with Database(config.get("VIO_DATABASE", "alias"), config.get("VIO_DATABASE", "login"),
-                          config.get("VIO_DATABASE", "password")) as db:
+            with Database(
+                config.get("VIO_DATABASE", "alias"),
+                config.get("VIO_DATABASE", "login"),
+                config.get("VIO_DATABASE", "password"),
+            ) as db:
                 for id in list_ids:
                     data_message = {}
 
-                    data_document = db.get_data_document(id, fields=["FROM", "TYP"])
+                    data_document = db.get_data_document(id, fields=["from", "typ"])
                     data_message.update(data_document)
 
                     data_message.update(
@@ -583,9 +605,9 @@ def vmse_proactive():
                         bad_list.append(id)
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"])
@@ -631,7 +653,6 @@ def upp_efs():
                 filepath = path.join(uploads_dir, filename)
                 file.save(filepath)
                 delimiter = get_delimiter(filepath)
-                template = path.join(templates_dir, "efs_upp.txt")
 
                 messages = {}
                 bad_list = []
@@ -651,9 +672,9 @@ def upp_efs():
                     messages.update(data_to_sent)
 
                 with ManagerQueue(
-                        config.get("Mq", "queue_manager"),
-                        config.get("Mq", "channel"),
-                        config.get("Mq", "conn_info"),
+                    config.get("Mq", "queue_manager"),
+                    config.get("Mq", "channel"),
+                    config.get("Mq", "conn_info"),
                 ) as qmgr:
                     for key, val in messages.items():
                         qmgr.send_message(val["queue_name"], val["message"])
@@ -671,9 +692,7 @@ def upp_efs():
                     resend_bad_result=resend_bad_result,
                     bad_list=bad_list,
                 )
-        return render_template(
-            "resend/file_input.html", resend_title=work_name
-        )
+        return render_template("resend/file_input.html", resend_title=work_name)
     else:
         abort(403, "Отсутствует доступ")
 
@@ -717,9 +736,9 @@ def upp_is():
                     messages.update(data_to_sent)
 
                 with ManagerQueue(
-                        config.get("Mq", "queue_manager"),
-                        config.get("Mq", "channel"),
-                        config.get("Mq", "conn_info"),
+                    config.get("Mq", "queue_manager"),
+                    config.get("Mq", "channel"),
+                    config.get("Mq", "conn_info"),
                 ) as qmgr:
                     for key, val in messages.items():
                         qmgr.send_message(val["queue_name"], val["message"])
@@ -737,9 +756,7 @@ def upp_is():
                     resend_bad_result=resend_bad_result,
                     bad_list=bad_list,
                 )
-        return render_template(
-            "resend/file_input.html", resend_title=work_name
-        )
+        return render_template("resend/file_input.html", resend_title=work_name)
     else:
         abort(403, "Отсутствует доступ")
 
@@ -784,9 +801,9 @@ def upp_szvm():
                     messages.update(data_to_sent)
 
                 with ManagerQueue(
-                        config.get("Mq", "queue_manager"),
-                        config.get("Mq", "channel"),
-                        config.get("Mq", "conn_info"),
+                    config.get("Mq", "queue_manager"),
+                    config.get("Mq", "channel"),
+                    config.get("Mq", "conn_info"),
                 ) as qmgr:
                     for key, val in messages.items():
                         qmgr.send_message(val["queue_name"], val["message"])
@@ -805,9 +822,7 @@ def upp_szvm():
                     resend_bad_result=resend_bad_result,
                     bad_list=bad_list,
                 )
-        return render_template(
-            "resend/file_input.html", resend_title=work_name
-        )
+        return render_template("resend/file_input.html", resend_title=work_name)
     else:
         abort(403, "Отсутствует доступ")
 
@@ -834,9 +849,9 @@ def resend_files():
                 messages.update(data_to_sent)
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"])
@@ -855,9 +870,7 @@ def resend_files():
                 resend_bad_result=resend_bad_result,
                 bad_list=bad_list,
             )
-        return render_template(
-            "resend/files_input.html", resend_title=work_name
-        )
+        return render_template("resend/files_input.html", resend_title=work_name)
     else:
         abort(403, "Отсутствует доступ")
 
@@ -873,32 +886,36 @@ def egrn_egrul_egrip():
 
             messages = {}
             bad_list = []
-            with Database(config.get("VIO_DATABASE", "alias"), config.get("VIO_DATABASE", "login"),
-                          config.get("VIO_DATABASE", "password")) as db:
+            with Database(
+                config.get("VIO_DATABASE", "alias"),
+                config.get("VIO_DATABASE", "login"),
+                config.get("VIO_DATABASE", "password"),
+            ) as db:
                 for id in list_ids:
                     data_message = {}
 
-                    data_document = db.get_data_document(id, fields=["TYP"])
+                    data_document = db.get_data_document(id, fields=["typ"])
                     data_message.update(data_document)
 
                     data_attributes = db.get_attributes(id)
                     data_message.update(data_attributes)
 
-                    data_message.update({"queue_name": config.get("MqUvkipOut", "queue_name")})
+                    data_message.update(
+                        {"queue_name": config.get("MqUvkipOut", "queue_name")}
+                    )
 
                     prepare_data = get_egrn_egrul_egrip_prepare_data(id, data_message)
                     if prepare_data:
                         message = get_message(work_name, prepare_data)
-                        #                        print(message)
                         data_to_sent = get_data_to_sent(id, message, data_message)
                         messages.update(data_to_sent)
                     else:
                         bad_list.append(id)
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"])
@@ -939,20 +956,28 @@ def resend_files_egrn_egrip_egrul():
                 filename = secure_filename(file.filename)
                 filepath = path.join(uploads_dir, filename)
                 file.save(filepath)
-                data_message.update({"queue_name": config.get("MqUvkipRq", "queue_name")})
+                data_message.update(
+                    {"queue_name": config.get("MqUvkipRq", "queue_name")}
+                )
                 message = read_txt(filepath)
                 data_to_sent = get_data_to_sent(filename, message, data_message)
                 messages.update(data_to_sent)
 
             list_md = [
-                {"param": config.get("MqUvkipRq", "param_to_q"), "value": config.get("MqUvkipRq", "value_to_q")},
-                {"param": config.get("MqUvkipRq", "param_to_qmgr"), "value": config.get("MqUvkipRq", "value_to_qmgr")},
+                {
+                    "param": config.get("MqUvkipRq", "param_to_q"),
+                    "value": config.get("MqUvkipRq", "value_to_q"),
+                },
+                {
+                    "param": config.get("MqUvkipRq", "param_to_qmgr"),
+                    "value": config.get("MqUvkipRq", "value_to_qmgr"),
+                },
             ]
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(
@@ -993,30 +1018,33 @@ def vmse_zapros():
 
             messages = {}
             bad_list = []
-            with Database(config.get("VIO_DATABASE", "alias"), config.get("VIO_DATABASE", "login"),
-                          config.get("VIO_DATABASE", "password")) as db:
+            with Database(
+                config.get("VIO_DATABASE", "alias"),
+                config.get("VIO_DATABASE", "login"),
+                config.get("VIO_DATABASE", "password"),
+            ) as db:
                 for id in list_ids:
                     data_message = {}
 
                     data_document = db.get_data_document(
                         id,
                         fields=[
-                            "FROM",
-                            "TO",
-                            "TYP",
-                            "REG_NUM",
-                            "REG_DATE",
-                            "NAME",
-                            "DOC_NUM",
-                            "DOC_DATE",
-                            "ADM_DATE",
-                            "SENDER",
-                            "RECEIVER",
+                            "from",
+                            "to",
+                            "typ",
+                            "reg_num",
+                            "reg_date",
+                            "name",
+                            "doc_num",
+                            "doc_date",
+                            "adm_date",
+                            "sender",
+                            "receiver",
                         ],
                     )
                     data_message.update(data_document)
 
-                    queue_name = f"{data_message['TO'].split(':')[2]}.NVP.FTE.IN"
+                    queue_name = f"{data_message['to'].split(':')[2]}.NVP.FTE.IN"
 
                     data_message.update(
                         {"process_code": "urn:process:4:3.0", "queue_name": queue_name}
@@ -1030,7 +1058,6 @@ def vmse_zapros():
                     prepare_data = get_vmse_zapros_prepare_data(id, data_message)
                     if prepare_data:
                         message = get_message(work_name, prepare_data)
-                        #                        print(message)
                         data_to_sent = get_data_to_sent(
                             id, message.strip(), data_message
                         )
@@ -1039,9 +1066,9 @@ def vmse_zapros():
                         bad_list.append(id)
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"], rfh2=True)
@@ -1084,24 +1111,30 @@ def npf_doc_uspn():
             messages_additional = {}
             bad_list = []
 
-            with Database(config.get("VIO_DATABASE", "alias"), config.get("VIO_DATABASE", "login"),
-                          config.get("VIO_DATABASE", "password")) as db:
+            with Database(
+                config.get("VIO_DATABASE", "alias"),
+                config.get("VIO_DATABASE", "login"),
+                config.get("VIO_DATABASE", "password"),
+            ) as db:
                 for id in list_ids:
                     data_message = {}
 
-                    data_document = db.get_data_document(id, fields=["TYP", "TO"])
+                    data_document = db.get_data_document(id, fields=["typ", "to"])
                     data_message.update(data_document)
 
                     data_linked_docs = db.get_linked_document_id(id, 14)
                     data_message.update(data_linked_docs)
 
                     upp_name = db.get_data_document(
-                        data_message["DOC_ID"], fields=["NAME"]
+                        data_message["doc_id"], fields=["name"]
                     )
                     data_message.update(upp_name)
 
                     data_message.update(
-                        {"process-code": process_code, "queue_name": config.get("MqUspnUpp", "queue_name")}
+                        {
+                            "process-code": process_code,
+                            "queue_name": config.get("MqUspnUpp", "queue_name"),
+                        }
                     )
 
                     prepare_data = get_npf_doc_uspn_prepare_data(id, data_message)
@@ -1112,7 +1145,9 @@ def npf_doc_uspn():
                         )
                         messages.update(data_to_sent_uspn)
                         message_uvkip = get_message(template_uvkip, id, prepare_data)
-                        data_message["queue_name"] = config.get("MqUvkipUpp", "queue_name")
+                        data_message["queue_name"] = config.get(
+                            "MqUvkipUpp", "queue_name"
+                        )
                         data_to_sent_uvkip = get_data_to_sent(
                             id, message_uvkip, data_message
                         )
@@ -1121,9 +1156,9 @@ def npf_doc_uspn():
                         bad_list.append(id)
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"])
@@ -1148,9 +1183,7 @@ def npf_doc_uspn():
                 bad_list=bad_list,
             )
 
-        return render_template(
-            "resend/uspn_input.html", resend_title=work_name
-        )
+        return render_template("resend/uspn_input.html", resend_title=work_name)
     else:
         abort(403, "Отсутствует доступ")
 
@@ -1215,9 +1248,7 @@ def efs_atom_retry_tool():
                 download_filename=zip_filename,
             )
 
-        return render_template(
-            "resend/list_input.html", resend_title=work_name
-        )
+        return render_template("resend/list_input.html", resend_title=work_name)
     else:
         abort(403, "Отсутствует доступ")
 
@@ -1244,9 +1275,9 @@ def resend_files_soe():
                 messages.update(data_to_sent)
 
             with ManagerQueue(
-                    config.get("MqSOE", "queue_manager"),
-                    config.get("MqSOE", "channel"),
-                    config.get("MqSOE", "conn_info"),
+                config.get("MqSOE", "queue_manager"),
+                config.get("MqSOE", "channel"),
+                config.get("MqSOE", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"])
@@ -1265,9 +1296,7 @@ def resend_files_soe():
                 resend_bad_result=resend_bad_result,
                 bad_list=bad_list,
             )
-        return render_template(
-            "resend/files_input_soe.html", resend_title=work_name
-        )
+        return render_template("resend/files_input_soe.html", resend_title=work_name)
     else:
         abort(403, "Отсутствует доступ")
 
@@ -1275,7 +1304,6 @@ def resend_files_soe():
 @resend.route("/downloads/<path:download_filename>", methods=["GET", "POST"])
 @login_required
 def downloads(download_filename):
-    # print("test")
     return send_from_directory(downloads_dir, download_filename)
 
 
@@ -1330,9 +1358,9 @@ def resend_poszn():
                         bad_list.append(id)
 
                 with ManagerQueue(
-                        config.get("Mq", "queue_manager"),
-                        config.get("Mq", "channel"),
-                        config.get("Mq", "conn_info"),
+                    config.get("Mq", "queue_manager"),
+                    config.get("Mq", "channel"),
+                    config.get("Mq", "conn_info"),
                 ) as qmgr:
                     for key, val in messages.items():
                         qmgr.send_message(val["queue_name"], val["message"])
@@ -1351,9 +1379,7 @@ def resend_poszn():
                     resend_bad_result=resend_bad_result,
                     bad_list=bad_list,
                 )
-        return render_template(
-            "resend/file_input.html", resend_title=work_name
-        )
+        return render_template("resend/file_input.html", resend_title=work_name)
     else:
         abort(403, "Отсутствует доступ")
 
@@ -1407,9 +1433,9 @@ def resend_rnpp():
                         bad_list.append(id)
 
                 with ManagerQueue(
-                        config.get("Mq", "queue_manager"),
-                        config.get("Mq", "channel"),
-                        config.get("Mq", "conn_info"),
+                    config.get("Mq", "queue_manager"),
+                    config.get("Mq", "channel"),
+                    config.get("Mq", "conn_info"),
                 ) as qmgr:
                     for key, val in messages.items():
                         qmgr.send_message(val["queue_name"], val["message"])
@@ -1428,9 +1454,7 @@ def resend_rnpp():
                     resend_bad_result=resend_bad_result,
                     bad_list=bad_list,
                 )
-        return render_template(
-            "resend/file_input.html", resend_title=work_name
-        )
+        return render_template("resend/file_input.html", resend_title=work_name)
     else:
         abort(403, "Отсутствует доступ")
 
@@ -1446,12 +1470,15 @@ def resend_adv_adi():
 
             messages = {}
             bad_list = []
-            with Database(config.get("VIO_DATABASE", "alias"), config.get("VIO_DATABASE", "login"),
-                          config.get("VIO_DATABASE", "password")) as db:
+            with Database(
+                config.get("VIO_DATABASE", "alias"),
+                config.get("VIO_DATABASE", "login"),
+                config.get("VIO_DATABASE", "password"),
+            ) as db:
                 for id in list_ids:
                     data_message = {}
 
-                    data_document = db.get_data_document(id, fields=["SENDER", "TYP"])
+                    data_document = db.get_data_document(id, fields=["sender", "typ"])
                     data_message.update(data_document)
 
                     data_attributes = db.get_attributes(id)
@@ -1460,26 +1487,28 @@ def resend_adv_adi():
                     data_linked_docs = db.get_linked_documents(id)
 
                     for item in data_linked_docs:
-                        if item["TYP"] == 14:
-                            data_message.update({"upp_id": item["DOC_ID"]})
-                        elif item["TYP"] == 80097:
+                        if item["typ"] == 14:
+                            data_message.update({"upp_id": item["doc_id"]})
+                        elif item["typ"] == 80097:
                             data_message.update(
-                                {"adi_id": item["DOC_ID"], "adi_typ": item["TYP"]}
+                                {"adi_id": item["doc_id"], "adi_typ": item["typ"]}
                             )
-                        elif item["TYP"] == 606:
+                        elif item["typ"] == 606:
                             data_message.update(
-                                {"adi_id": item["DOC_ID"], "adi_typ": item["TYP"]}
+                                {"adi_id": item["doc_id"], "adi_typ": item["typ"]}
                             )
 
                     data_adi_document = db.get_data_document(
-                        data_message["adi_id"], fields=["REG_DATE"]
+                        data_message["adi_id"], fields=["reg_date"]
                     )
                     data_message.update(data_adi_document)
 
                     if data_message["adi_typ"] == 80097:
                         adi_xml = db.get_content_xml(data_message["adi_id"])
                         data_message.update({"adi_xml": adi_xml})
-                    data_message.update({"queue_name": config.get("MqAppSpuOut", "queue_name")})
+                    data_message.update(
+                        {"queue_name": config.get("MqAppSpuOut", "queue_name")}
+                    )
                     prepare_data = get_adv_adi_prepare_data(id, data_message)
                     if prepare_data:
                         message = get_message(work_name, prepare_data)
@@ -1489,9 +1518,9 @@ def resend_adv_adi():
                         bad_list.append(id)
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"])
@@ -1541,9 +1570,9 @@ def resend_files_efs_to_spu():
                 messages.update(data_to_sent)
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"])
@@ -1580,32 +1609,36 @@ def szi_km_to_fbdp():
 
             messages = {}
             bad_list = []
-            with Database(config.get("VIO_DATABASE", "alias"), config.get("VIO_DATABASE", "login"),
-                          config.get("VIO_DATABASE", "password")) as db:
+            with Database(
+                config.get("VIO_DATABASE", "alias"),
+                config.get("VIO_DATABASE", "login"),
+                config.get("VIO_DATABASE", "password"),
+            ) as db:
                 for id in list_ids:
                     data_message = {}
 
-                    data_document = db.get_data_document(id, fields=["TYP"])
+                    data_document = db.get_data_document(id, fields=["typ"])
                     data_message.update(data_document)
 
                     data_attributes = db.get_attributes(id)
                     data_message.update(data_attributes)
 
-                    data_message.update({"queue_name": config.get("MqSpuOut", "queue_name")})
+                    data_message.update(
+                        {"queue_name": config.get("MqSpuOut", "queue_name")}
+                    )
 
                     prepare_data = get_szi_km_to_fbdp_prepare_data(id, data_message)
                     if prepare_data:
                         message = get_message(work_name, prepare_data)
-                        #                        print(message)
                         data_to_sent = get_data_to_sent(id, message, data_message)
                         messages.update(data_to_sent)
                     else:
                         bad_list.append(id)
 
             with ManagerQueue(
-                    config.get("Mq", "queue_manager"),
-                    config.get("Mq", "channel"),
-                    config.get("Mq", "conn_info"),
+                config.get("Mq", "queue_manager"),
+                config.get("Mq", "channel"),
+                config.get("Mq", "conn_info"),
             ) as qmgr:
                 for key, val in messages.items():
                     qmgr.send_message(val["queue_name"], val["message"])

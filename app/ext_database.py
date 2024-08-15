@@ -1,13 +1,14 @@
-# import ibm_db_dbi
+import ibm_db_dbi
 from flask import current_app
 import json
 from .ext_databases.db_queries import *
+import sys
 
 
 class Database:
     """
     Класс для работы с внешними базами данных DB2.
- 
+
     Attributes:
         hostname (str): Ip-адрес БД или алиас.
         username (str): Имя пользователя-логин.
@@ -17,7 +18,7 @@ class Database:
     def __init__(self, hostname: str, username: str, password: str):
         """
         Инициализация подключения к БД.
- 
+
         Parameters:
             hostname (str): Ip-адрес БД или алиас.
             username (str): Имя пользователя-логин.
@@ -39,8 +40,6 @@ class Database:
         Получение данных из БД
 
         Parameters:
-            query (str): SQL-запрос к БД.
-            query (str): SQL-запрос к БД.
             query (str): SQL-запрос к БД.
 
 
@@ -70,17 +69,17 @@ class Database:
 
     def get_data_document(self, id, fields=None):
         db_data = self.get_db_data(query_document_fiedls, id)
-        data_document = get_data_document_from_db_data(db_data, fields)
+        data_document = self.get_data_document_from_db_data(db_data, fields)
         return data_document
 
     def get_attributes(self, id):
         db_data = self.get_db_data(query_atrributes, id)
-        data_attributes = get_attributes_from_db_data(db_data)
+        data_attributes = self.get_attributes_from_db_data(db_data)
         return data_attributes
 
     def get_linked_document_id(self, id, typ):
         db_data = self.get_db_data(query_linked_docs, id)
-        linked_document_id = get_linked_document_id_from_db_data(db_data, typ)
+        linked_document_id = self.get_linked_document_id_from_db_data(db_data, typ)
         return linked_document_id
 
     def get_linked_documents(self, id):
@@ -89,19 +88,19 @@ class Database:
 
     def get_attached_documents(self, id):
         db_data = self.get_db_data(query_attached_docs, id)
-        data_attached_documnets = get_attached_documents_from_db_data(db_data)
+        data_attached_documnets = self.get_attached_documents_from_db_data(db_data)
         return data_attached_documnets
 
     def get_linked_parent_document_id(self, id):
         db_data = self.get_db_data(query_linked_parent_docs, id)
-        linked_parent_document_id = get_data_document_from_db_data(
+        linked_parent_document_id = self.get_data_document_from_db_data(
             db_data, ["parent_doc_id"]
         )
         return linked_parent_document_id["parent_doc_id"]
 
     def get_content_xml(self, id):
         db_data = self.get_db_data(query_content_body_xml, id)
-        content_xml = get_data_document_from_db_data(db_data, ["body_xml"])
+        content_xml = self.get_data_document_from_db_data(db_data, ["body_xml"])
         return content_xml["body_xml"]
 
     def get_szv_zapros_data(self, id):
@@ -146,7 +145,8 @@ class Database:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is not None:
-            current_app.logger.error("error connect")
+            current_app.logger.error(f"{sys.exc_info()}")
 
         self.connection.close()
         current_app.logger.debug("Закрыто подкючение к БД")
+
