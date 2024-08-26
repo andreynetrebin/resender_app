@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, flash, redirect, url_for
 from flask_login import LoginManager
 import logging
 from logging.config import dictConfig
@@ -47,6 +47,12 @@ def create_app(configuration):
             app (app.users.User):  Объект пользователя
         """
         return User.users.get(int(user_id))
+
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        """При unauthorized users перенарправлять залогиниться."""
+        flash('Вы должны авторизоваться.')
+        return redirect(url_for('auth.login'))
 
     # blueprint для главной страницы
     from .main import main as main_blueprint
