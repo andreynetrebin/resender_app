@@ -6,6 +6,11 @@ Flask приложение для формирования сообщений (X
 ## Tech Stack
 
 Python(3.6), Flask, Bootstrap, jQuery
+
+## Application Architecture
+
+![resender_arch3](https://github.com/user-attachments/assets/ad5aa124-2052-4115-bf84-8ccc5b423013)
+
 ## Features
 
 - Интуитивно понятный интерфейс
