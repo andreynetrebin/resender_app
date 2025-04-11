@@ -1,4 +1,3 @@
-
 # Resender
 ![resender_arch3](https://github.com/user-attachments/assets/ad5aa124-2052-4115-bf84-8ccc5b423013)
 
@@ -215,4 +214,3 @@ Python(3.6), Flask, Bootstrap, jQuery
  - [Flask для начинающих — Часть 2 пишем landing page+admin panel](https://habr.com/ru/articles/784770/)
  - [Проектирование RESTful API с помощью Python и Flask](https://habr.com/ru/articles/246699/)
  - [How to structure a large flask application with flask blueprints](https://www.digitalocean.com/community/tutorials/how-to-structure-a-large-flask-application-with-flask-blueprints-and-flask-sqlalchemy)
- - 
